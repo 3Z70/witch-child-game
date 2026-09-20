@@ -265,7 +265,7 @@ function beginStory() {
 /* ---------- 路线封面 ---------- */
 function showCover() {
   const combo = DATA.combos[STATE.combo];
-  $("cover-img").style.backgroundImage = 'url("covers/' + (STATE.combo + 1) + '.png")';
+  $("cover-img").style.backgroundImage = 'url("covers/' + (STATE.combo + 1) + '.webp")';
   $("cover-route").textContent = "「" + combo.route + "」";
   showScreen("sc-cover");
 }
@@ -429,7 +429,7 @@ function showEnding(ending, routeName) {
   const img = $("end-pic");
   img.onerror = () => $("end-pic-wrap").classList.add("noimg");
   img.onload = () => $("end-pic-wrap").classList.remove("noimg");
-  img.src = "endings/" + ending.code + ".png";
+  img.src = "endings/" + ending.code + ".webp";
 
   $("btn-end-again").onclick = () => {
     const combo = DATA.combos[STATE.combo];
