@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>《魔女养成手札》</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div id="bg">
+  <div class="forest"></div>
+  <div id="fx"></div>
+</div>
+
+<!-- 开始界面 -->
+<section id="sc-title" class="screen active">
+  <div class="title-wrap">
+    <h1 class="game-title">《魔女养成手札》</h1>
+    <p class="subtitle">你在森林深处，捡到了一个孩子。<br>从此，你的余生有了一个名字。</p>
+    <div class="menu">
+      <button id="btn-start" class="big primary">开始游戏</button>
+      <button id="btn-continue" class="big">继续游戏</button>
+      <button id="btn-gallery" class="big">图鉴·回想</button>
+      <button id="btn-about" class="big ghost">关 于</button>
+    </div>
+  </div>
+</section>
+
+<!-- 自定义界面 -->
+<section id="sc-custom" class="screen">
+  <div class="panel cust-panel">
+    <h2 class="panel-title">先做一点决定</h2>
+
+    <label class="field-label">请为魔女命名：</label>
+    <input id="in-witch" class="textinput" type="text" maxlength="10" placeholder="阿芙拉（可留空）" autocomplete="off">
+
+    <label class="field-label">请为孩子命名：</label>
+    <input id="in-child" class="textinput" type="text" maxlength="10" placeholder="小夜（可留空）" autocomplete="off">
+
+    <label class="field-label">孩子的性格：</label>
+    <div class="opt-row" id="pers-wrap"></div>
+
+    <label class="field-label">你打算如何养育他/她？</label>
+    <div class="opt-row" id="style-wrap"></div>
+
+    <div id="route-hint" class="route-hint"></div>
+    <div id="custom-hint" class="hint warn"></div>
+
+    <button id="btn-begin-story" class="big primary">开始故事</button>
+  </div>
+</section>
+
+<!-- 路线封面 -->
+<section id="sc-cover" class="screen">
+  <div id="cover-img" class="cover-img"></div>
+  <div class="cover-shade"></div>
+  <div class="cover-inner">
+    <p class="cover-kicker">这一次，你要养育的是</p>
+    <h1 id="cover-route" class="cover-route"></h1>
+    <button id="btn-cover-enter" class="big primary">进入故事</button>
+  </div>
+</section>
+
+<!-- 主游戏界面 -->
+<section id="sc-game" class="screen">
+  <div class="game-top">
+    <div class="g-line">
+      <span id="g-round" class="g-round"></span>
+      <span id="g-witch"></span>
+      <span id="g-child"></span>
+      <span id="g-route" class="g-route"></span>
+    </div>
+    <div id="g-stats" class="g-stats"></div>
+  </div>
+
+  <div class="panel">
+    <h2 id="g-title" class="round-title"></h2>
+    <div class="g-scene">
+      <div class="scene-art" aria-hidden="true">
+        <div class="moon"></div>
+        <div class="hill hill-1"></div>
+        <div class="hill hill-2"></div>
+        <div class="tree t1"></div>
+        <div class="tree t2"></div>
+        <div class="tree t3"></div>
+      </div>
+      <p id="g-text" class="g-text"></p>
+      <div id="g-choices" class="g-choices"></div>
+
+      <div id="g-result" class="g-result hidden">
+        <p id="res-text" class="res-text"></p>
+        <div id="res-fx" class="res-fx"></div>
+        <button id="btn-continue-round" class="big primary">进入下一回合</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-bar">
+    <button id="btn-save" class="mini">存档</button>
+    <button id="btn-load" class="mini">读档</button>
+    <button id="btn-settings" class="mini">设置</button>
+  </div>
+</section>
+
+<!-- 结局弹窗：配图 + 文本 + 心声 + 行动 -->
+<div id="end-ovl" class="modal-ovl ending-ovl">
+  <div class="modal ending-modal">
+    <div id="end-pic-wrap" class="end-pic-wrap">
+      <img id="end-pic" class="end-pic" src="" alt="结局插图">
+    </div>
+    <div class="end-modal-body">
+      <div id="end-m-code" class="e-code"></div>
+      <div id="end-m-title" class="e-title"></div>
+      <div id="end-m-text" class="e-text"></div>
+      <div class="mono-wrap"><div id="end-m-mono" class="e-mono"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button id="btn-end-again" class="mbtn">再来一次（同路线）</button>
+      <button id="btn-end-restart" class="mbtn primary">重新开始</button>
+      <button id="btn-end-title" class="mbtn">回到标题</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗 -->
+<div id="modal-ovl" class="modal-ovl">
+  <div class="modal">
+    <div id="modal-title" class="modal-title"></div>
+    <div id="modal-body" class="modal-body"></div>
+    <div id="modal-foot" class="modal-foot"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="./data.js"></script>
+<script src="./game.js"></script>
+</body>
+</html>
