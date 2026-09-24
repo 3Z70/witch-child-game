@@ -141,7 +141,7 @@ function galleryAdd(code, type, title) {
     try { g = JSON.parse(localStorage.getItem(GALLERY_KEY) || "[]"); } catch (e) { g = []; }
     if (!Array.isArray(g)) g = [];
     if (!g.some((x) => x.code === code)) {
-      g.unshift({ code, type, title, time: Date.now() });
+      g.unshift({ code, type, title, witch: STATE.witchName, child: STATE.childName, time: Date.now() });
     }
     localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
   } catch (e) { /* ignore */ }
@@ -154,6 +154,76 @@ function galleryGet() {
   } catch (e) {
     return [];
   }
+}
+
+/* ---------- 图鉴详情 ---------- */
+function findEnding(code) {
+  const n = parseInt(code.split("-")[0], 10);
+  const list = DATA.endings[n];
+  if (!list) return null;
+  return list.find((e) => e.code === code) || null;
+}
+
+function openGalDetail(code) {
+  const ending = findEnding(code);
+  if (!ending) {
+    toast("找不到这个结局了");
+    return;
+  }
+  const g = galleryGet();
+  const entry = g.find((x) => x.code === code) || {};
+  const witch = entry.witch || "魔女";
+  const child = entry.child || "孩子";
+  const n = parseInt(code.split("-")[0], 10);
+
+  closeModal();
+  const ovl = $("gal-ovl");
+  ovl.classList.remove("ending-light", "ending-shadow", "ending-dark");
+  ovl.classList.add("ending-" + ending.key);
+
+  $("gal-code").textContent = endingTag(ending);
+  $("gal-route").textContent = "「" + (DATA.routeNames[n - 1] || "") + "」";
+  $("gal-title").textContent = "《" + ending.title + "》";
+
+  const cover = $("gal-cover");
+  cover.onerror = () => $("gal-cover-wrap").classList.add("noimg");
+  cover.onload = () => $("gal-cover-wrap").classList.remove("noimg");
+  cover.src = "covers/" + n + ".webp";
+
+  const pic = $("gal-pic");
+  pic.onerror = () => $("gal-pic-wrap").classList.add("noimg");
+  pic.onload = () => $("gal-pic-wrap").classList.remove("noimg");
+  pic.src = "endings/" + ending.code + ".webp";
+
+  $("gal-text").innerHTML = ending.body
+    .replace(/\{魔女名\}/g, witch)
+    .replace(/\{孩子名\}/g, child)
+    .split("\n")
+    .map((l) => { const t = l.trim(); return t ? "<p>" + t + "</p>" : "<br>"; })
+    .join("");
+  $("gal-mono").innerHTML = "“" + ending.mono
+    .replace(/\{魔女名\}/g, witch)
+    .replace(/\{孩子名\}/g, child)
+    .split("\n")
+    .map((l) => l.trim())
+    .join("<br>") + "”";
+
+  ovl.classList.add("on");
+}
+
+function closeGalDetail() {
+  $("gal-ovl").classList.remove("on");
+}
+
+function bindGalDetail() {
+  $("gal-ovl").onclick = (e) => {
+    if (e.target === $("gal-ovl")) closeGalDetail();
+  };
+  $("btn-gal-back").onclick = () => {
+    closeGalDetail();
+    openGallery();
+  };
+  $("btn-gal-close").onclick = closeGalDetail;
 }
 
 /* ---------- 标题界面 ---------- */
@@ -189,9 +259,12 @@ function openGallery() {
   const item = (e) => {
     const key = e.key || map[e.type] || "shadow";
     const label = map[key] || e.type || "影";
-    return '<div class="gal-item ' + key + '"><span class="gal-code">' + e.code + " · " + label + '</span><span class="gal-title">' + e.title + "</span></div>";
+    return '<div class="gal-item ' + key + '" data-code="' + e.code + '"><span class="gal-code">' + e.code + " · " + label + '</span><span class="gal-title">' + e.title + '</span><span class="gal-arrow">›</span></div>';
   };
   openModal("图鉴·回想（" + g.length + "/27）", g.map(item).join(""), [{ label: "关上" }]);
+  document.querySelectorAll("#modal-body .gal-item").forEach((el) => {
+    el.onclick = () => openGalDetail(el.dataset.code);
+  });
 }
 
 /* ---------- 自定义界面 ---------- */
@@ -526,6 +599,7 @@ function init() {
   bindCover();
   bindGameBar();
   bindEndModal();
+  bindGalDetail();
   $("modal-ovl").onclick = (e) => {
     if (e.target === $("modal-ovl")) closeModal();
   };
